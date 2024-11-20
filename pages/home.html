@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petvita</title>
+    <script src="https://cdn.tailwindcss.com"></script> <!-- Link to Tailwind CSS -->
+</head>
+<body class="bg-gray-100">
+
+    <!-- Navbar -->
+    <nav class="bg-gray-800 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="relative flex items-center justify-between h-16">
+    
+                <!-- Logo (à esquerda) -->
+                <div class="flex-shrink-0">
+                    <img src="../Assets/Logo1.png" alt="Logo" class="h-8 sm:h-10">
+                </div>
+    
+                <!-- Barra de Pesquisa (centro) -->
+                <div class="flex-1 px-4 sm:px-8 max-w-md mx-auto">
+                    <input type="search" name="search" placeholder="Pesquisar" class="w-full bg-gray-800 text-white rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                </div>
+    
+                <!-- Menu Sanduíche (à direita) - visível em todas as telas -->
+                <div class="flex items-center sm:flex">
+                    <button id="user-menu-button" type="button" class="text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    </button>
+                </div>
+    
+            </div>
+        </div>
+    </nav>
+
+    <!-- Menu Dropdown (quando o menu sanduíche é clicado) -->
+<div id="user-menu" class="hidden fixed inset-0 bg-black bg-opacity-50 z-10">
+    <div class="absolute right-0 mt-10 mr-4 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+        <ul class="py-2">
+            <li>
+                <a href="userProfile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Visualizar perfil</a>
+            </li>
+            <li>
+                <a href="sobreNos.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sobre nós</a>
+            </li>
+            <li>
+                <a href="parceiros.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Parceiros</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+    <!-- Main Content -->
+    <main class="py-6">
+        <h1 class="text-4xl text-center font-semibold text-gray-900">Seus Pets</h1>
+
+        <!-- Pet Cards Container -->
+        <div id="pet-cards-container" class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Dynamic pet cards will be inserted here -->
+        </div>
+    </main>
+
+    <!-- Floating Action Button (FAB) -->
+    <div class="fixed bottom-10 right-10">
+        <button class="bg-[#499F68] text-white rounded-full p-4 shadow-lg hover:bg-[#3e8c5c] focus:outline-none">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Modal (Hidden by default) -->
+    <div id="pet-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white rounded-lg p-6 max-w-md mx-auto">
+            <h2 class="text-[#499F68] text-2xl font-semibold mb-4">Adicione o seu pet</h2>
+            <p class="text-[#499F68] mb-4">Escolha uma foto</p>
+
+            <!-- Upload Photo Icon -->
+            <div class="mb-4">
+                <label for="pet-photo" class="cursor-pointer">
+                    <img src="../Assets/IconeUpload.png" alt="Ícone de upload" class="h-10 mx-auto">
+                    <input type="file" id="pet-photo" class="hidden" />
+                </label>
+            </div>
+
+            <!-- Nome do arquivo selecionado (novo elemento) -->
+            <p id="file-name" class="text-sm text-gray-600 mt-2"></p> <!-- Elemento para exibir o nome do arquivo -->
+
+            <!-- Pet Info Inputs -->
+            <input type="text" id="pet-name" placeholder="Nome do Pet" class="border border-gray-300 rounded-md p-2 mb-2 w-full" />
+            <input type="text" id="pet-type" placeholder="Tipo de Pet (Cachorro, Gato, Pássaro)" class="border border-gray-300 rounded-md p-2 mb-2 w-full" />
+            <input type="text" id="pet-gender" placeholder="Sexo (Macho/Fêmea)" class="border border-gray-300 rounded-md p-2 mb-2 w-full" />
+
+            <!-- Save and Close Buttons -->
+            <div class="space-y-2">
+                <button id="save-pet" class="bg-[#499F68] text-white rounded-md p-2 w-full">Salvar</button>
+                <button id="close-modal" class="bg-red-500 text-white hover:bg-red-600 rounded-md p-2 w-full">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../script/home.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js"></script>
+
+</body>
+</html>

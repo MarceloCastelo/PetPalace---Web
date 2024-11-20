@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultas de Pet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="../script/consultas.js" defer></script> <!-- Link para o arquivo JS -->
+</head>
+<body class="bg-gradient-to-br from-[#395e66] via-[#387d7a] to-[#32936f] min-h-screen">
+
+    <div class="container mx-auto p-8">
+        <h1 class="text-3xl font-semibold text-center text-white mb-6">Consultas do Pet</h1>
+
+        <!-- Formulário para adicionar consulta -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-2xl font-medium text-[#32936f] mb-4">Cadastrar Consulta</h2>
+            <form id="consultaForm">
+                <div class="mb-4">
+                    <label for="consultation_reason" class="block text-[#395e66]">Motivo da Consulta</label>
+                    <input type="text" id="consultation_reason" name="consultation_reason" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]" required>
+                </div>
+                <div class="mb-4">
+                    <label for="vet_name" class="block text-[#395e66]">Nome do Veterinário</label>
+                    <input type="text" id="vet_name" name="vet_name" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]" required>
+                </div>
+                <div class="mb-4">
+                    <label for="consultation_date" class="block text-[#395e66]">Data da Consulta</label>
+                    <input type="date" id="consultation_date" name="consultation_date" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]" required>
+                </div>
+                <div class="mb-4">
+                    <label for="description" class="block text-[#395e66]">Descrição</label>
+                    <textarea id="description" name="description" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]" rows="4"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-[#26a96c] text-white p-3 rounded-lg hover:bg-[#2bc016]">Cadastrar Consulta</button>
+            </form>
+        </div>
+
+        <!-- Tabela de Consultas -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-medium text-[#32936f] mb-4">Consultas Registradas</h2>
+            <table class="min-w-full table-auto">
+                <thead>
+                    <tr class="border-b">
+                        <th class="py-2 px-4 text-left text-[#395e66]">Motivo da Consulta</th>
+                        <th class="py-2 px-4 text-left text-[#395e66]">Veterinário</th>
+                        <th class="py-2 px-4 text-left text-[#395e66]">Data</th>
+                        <th class="py-2 px-4 text-left text-[#395e66]">Descrição</th>
+                    </tr>
+                </thead>
+                <tbody id="consultaTableBody">
+                    <!-- Consultas serão exibidas aqui -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

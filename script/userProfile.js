@@ -34,7 +34,7 @@ function loadUserData(user) {
     } else {
         // Redireciona para a tela de login se o usuário não estiver logado
         alert("Por favor, faça o login.");
-        window.location.href = "/login.html"; // Redireciona para a página de login
+        window.location.href = "./login.html"; // Redireciona para a página de login
     }
 }
 
@@ -43,7 +43,7 @@ function logout() {
     signOut(auth)
         .then(() => {
             alert("Você foi deslogado com sucesso!");
-            window.location.href = "/login.html"; // Redireciona para a página de login após deslogar
+            window.location.href = "./login.html"; // Redireciona para a página de login após deslogar
         })
         .catch((error) => {
             console.error("Erro ao deslogar:", error.message);

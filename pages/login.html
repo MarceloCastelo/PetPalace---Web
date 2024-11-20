@@ -4,38 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PetVita</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
+
     <div class="flex flex-col md:flex-row items-center justify-center min-h-screen">
+
+        <!-- Form Container -->
         <div class="w-full md:w-1/2 p-6 md:p-12">
             <form class="bg-white shadow-lg rounded-lg p-8">
+
+                <!-- Logo and Title -->
                 <section>
                     <div class="text-center mb-8">
-                        <h1 class="text-3xl font-bold text-gray-800">PetVita</h1>
-                        <img src="../assets/Logo1.png" alt="Logo" class="mx-auto mt-4 w-24 h-24" />                              
+                        <h1 class="text-3xl font-bold text-[#32936f]">PetVita</h1>
+                        <img src="../assets/Logo1.png" alt="Logo" class="mx-auto mt-4 w-24 h-24" />
                     </div>
+
+                    <!-- Email Input -->
                     <div class="mb-6">
                         <label for="InputEmail1" class="block text-gray-700 font-medium mb-2">Email</label>
-                        <input type="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="InputEmail1">
+                        <input type="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]" id="InputEmail1" placeholder="Digite seu e-mail">
                     </div>
+
+                    <!-- Password Input -->
                     <div class="mb-6">
                         <label for="exampleInputPassword1" class="block text-gray-700 font-medium mb-2">Senha</label>
-                        <input type="password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="exampleInputPassword1">
+                        <input type="password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]" id="exampleInputPassword1" placeholder="Digite sua senha">
                     </div>
+
+                    <!-- Login Button -->
                     <a href="./home.html">
-                        <button type="button" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200">Entrar</button>
+                        <button type="button" class="w-full bg-[#32936f] text-white py-2 rounded-lg hover:bg-[#26a96c] transition duration-200">
+                            Entrar
+                        </button>
                     </a>
+
+                    <!-- First Access Link -->
                     <p class="text-center mt-6 text-gray-700">Primeiro Acesso?</p>
                     <a href="../pages/register.html">
-                        <button type="button" class="w-full text-blue-500 py-2 rounded-lg hover:underline">Clique Aqui</button>
+                        <button type="button" class="w-full text-[#32936f] py-2 rounded-lg hover:underline">Clique Aqui</button>
                     </a>
                 </section>
+
             </form>     
         </div>
-        <div class="hidden md:block md:w-1/2">
-            <img src="../assets/ImgBgLogin.gif" alt="" class="w-full h-full object-cover rounded-lg">
-        </div>
+
     </div>
 
     <script type="module" src="../script/login.js"></script>

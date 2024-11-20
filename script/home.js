@@ -44,8 +44,8 @@ onAuthStateChanged(auth, (user) => {
 });
 
 
- // Alterna a visibilidade do menu ao clicar no botão
- userMenuButton.addEventListener('click', () => {
+// Alterna a visibilidade do menu ao clicar no botão
+userMenuButton.addEventListener('click', () => {
     userMenu.classList.toggle('hidden'); // Alterna a classe 'hidden' para mostrar ou esconder o menu
 });
 
@@ -193,8 +193,8 @@ function loadPets(searchTerm = '') {
                 // Filtra os pets com base no termo de pesquisa
                 const filteredPets = Object.values(pets).filter((pet) => {
                     return pet.dataPetName.toLowerCase().includes(searchTerm) ||
-                           pet.dataPetType.toLowerCase().includes(searchTerm) ||
-                           pet.dataPetGender.toLowerCase().includes(searchTerm);
+                        pet.dataPetType.toLowerCase().includes(searchTerm) ||
+                        pet.dataPetGender.toLowerCase().includes(searchTerm);
                 });
 
                 // Cria o card para cada pet filtrado
@@ -214,15 +214,16 @@ function createPetCard(pet) {
 
     // Estrutura do card
     petCard.innerHTML = `
-        <img src="${pet.dataImage}" alt="${pet.dataPetName}" class="w-full h-48 object-cover rounded-md mb-4">
-        <h3 class="text-xl font-semibold text-center">${pet.dataPetName}</h3>
-        <p class="text-sm text-gray-600 text-center">${pet.dataPetType}</p>
-        <p class="text-sm text-gray-600 text-center">${pet.dataPetGender}</p>
-        <div class="flex justify-center mt-4 space-x-4">
-            <button class="edit-pet bg-blue-500 text-white px-4 py-2 rounded-md">Editar</button>
-            <button class="delete-pet bg-red-500 text-white px-4 py-2 rounded-md">Remover</button>
-        </div>
+    <img src="${pet.dataImage}" alt="${pet.dataPetName}" class="w-full h-48 object-cover rounded-md mb-4">
+    <h3 class="text-xl font-semibold text-center text-[#32936f]">${pet.dataPetName}</h3>
+    <p class="text-sm text-[#395e66] text-center">${pet.dataPetType}</p>
+    <p class="text-sm text-[#395e66] text-center">${pet.dataPetGender}</p>
+    <div class="flex justify-center mt-4 space-x-4">
+        <button class="edit-pet bg-[#26a96c] text-white px-4 py-2 rounded-md hover:bg-[#2bc016]">Editar</button>
+        <button class="delete-pet bg-[#395e66] text-white px-4 py-2 rounded-md hover:bg-[#387d7a]">Remover</button>
+    </div>
     `;
+
 
     // Adiciona evento para redirecionar ao clicar no card
     petCard.addEventListener('click', (event) => {

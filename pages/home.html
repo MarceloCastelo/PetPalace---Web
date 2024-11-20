@@ -9,7 +9,7 @@
 <body class="bg-gray-100">
 
     <!-- Navbar -->
-    <nav class="bg-gray-800 shadow-md">
+    <nav class="bg-[#395e66] shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="relative flex items-center justify-between h-16">
     
@@ -20,7 +20,7 @@
     
                 <!-- Barra de Pesquisa (centro) -->
                 <div class="flex-1 px-4 sm:px-8 max-w-md mx-auto">
-                    <input type="search" name="search" placeholder="Pesquisar" class="w-full bg-gray-800 text-white rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                    <input type="search" name="search" placeholder="Pesquisar" class="w-full bg-[#387d7a] text-white rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#2bc016] focus:ring-offset-2 focus:ring-offset-[#395e66]">
                 </div>
     
                 <!-- Menu Sanduíche (à direita) - visível em todas as telas -->
@@ -37,36 +37,35 @@
     </nav>
 
     <!-- Menu Dropdown (quando o menu sanduíche é clicado) -->
-<div id="user-menu" class="hidden fixed inset-0 bg-black bg-opacity-50 z-10">
-    <div class="absolute right-0 mt-10 mr-4 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
-        <ul class="py-2">
-            <li>
-                <a href="userProfile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Visualizar perfil</a>
-            </li>
-            <li>
-                <a href="sobreNos.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sobre nós</a>
-            </li>
-            <li>
-                <a href="parceiros.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Parceiros</a>
-            </li>
-        </ul>
+    <div id="user-menu" class="hidden fixed inset-0 bg-black bg-opacity-50 z-10">
+        <div class="absolute right-0 mt-10 mr-4 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+            <ul class="py-2">
+                <li>
+                    <a href="userProfile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Visualizar perfil</a>
+                </li>
+                <li>
+                    <a href="sobreNos.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sobre nós</a>
+                </li>
+                <li>
+                    <a href="parceiros.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Parceiros</a>
+                </li>
+            </ul>
+        </div>
     </div>
-</div>
-
 
     <!-- Main Content -->
     <main class="py-6">
-        <h1 class="text-4xl text-center font-semibold text-gray-900">Seus Pets</h1>
+        <h1 class="text-4xl text-center font-semibold text-[#32936f]">Seus Pets</h1>
 
         <!-- Pet Cards Container -->
-        <div id="pet-cards-container" class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div id="pet-cards-container" class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
             <!-- Dynamic pet cards will be inserted here -->
         </div>
     </main>
 
     <!-- Floating Action Button (FAB) -->
-    <div class="fixed bottom-10 right-10">
-        <button class="bg-[#499F68] text-white rounded-full p-4 shadow-lg hover:bg-[#3e8c5c] focus:outline-none">
+    <div class="fixed bottom-10 right-10 sm:bottom-4 sm:right-4">
+        <button class="bg-[#26a96c] text-white rounded-full p-4 shadow-lg hover:bg-[#2bc016] focus:outline-none">
             <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
             </svg>
@@ -75,9 +74,9 @@
 
     <!-- Modal (Hidden by default) -->
     <div id="pet-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="bg-white rounded-lg p-6 max-w-md mx-auto">
-            <h2 class="text-[#499F68] text-2xl font-semibold mb-4">Adicione o seu pet</h2>
-            <p class="text-[#499F68] mb-4">Escolha uma foto</p>
+        <div class="bg-white rounded-lg p-6 max-w-md mx-auto w-full sm:w-96">
+            <h2 class="text-[#32936f] text-2xl font-semibold mb-4">Adicione o seu pet</h2>
+            <p class="text-[#32936f] mb-4">Escolha uma foto</p>
 
             <!-- Upload Photo Icon -->
             <div class="mb-4">
@@ -91,13 +90,13 @@
             <p id="file-name" class="text-sm text-gray-600 mt-2"></p> <!-- Elemento para exibir o nome do arquivo -->
 
             <!-- Pet Info Inputs -->
-            <input type="text" id="pet-name" placeholder="Nome do Pet" class="border border-gray-300 rounded-md p-2 mb-2 w-full" />
+            <input type="text" id="pet-name" placeholder="Motivo da Consulta" class="border border-gray-300 rounded-md p-2 mb-2 w-full" />
             <input type="text" id="pet-type" placeholder="Tipo de Pet (Cachorro, Gato, Pássaro)" class="border border-gray-300 rounded-md p-2 mb-2 w-full" />
             <input type="text" id="pet-gender" placeholder="Sexo (Macho/Fêmea)" class="border border-gray-300 rounded-md p-2 mb-2 w-full" />
 
             <!-- Save and Close Buttons -->
             <div class="space-y-2">
-                <button id="save-pet" class="bg-[#499F68] text-white rounded-md p-2 w-full">Salvar</button>
+                <button id="save-pet" class="bg-[#32936f] text-white rounded-md p-2 w-full">Salvar</button>
                 <button id="close-modal" class="bg-red-500 text-white hover:bg-red-600 rounded-md p-2 w-full">Fechar</button>
             </div>
         </div>

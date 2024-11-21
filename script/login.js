@@ -1,6 +1,13 @@
 // Importando as funções necessárias do Firebase
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { 
+  initializeApp 
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  GoogleAuthProvider, 
+  signInWithPopup 
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 // Configuração do Firebase
 const firebaseConfig = {
@@ -21,36 +28,46 @@ const auth = getAuth(app);
 const emailInput = document.getElementById("InputEmail1");
 const passwordInput = document.getElementById("exampleInputPassword1");
 const loginButton = document.querySelector("button[type='button']");
+const googleButton = document.getElementById("google-login"); // Adicione o botão de login com Google
 
-// Adicionando evento de clique no botão de login
+// Evento de login com email e senha
 loginButton.addEventListener("click", (event) => {
-  event.preventDefault();  // Previne o envio do formulário
+  event.preventDefault();
 
-  // Capturando os valores do email e senha
   const email = emailInput.value;
   const password = passwordInput.value;
 
-  // Verificando se os campos estão preenchidos
   if (!email || !password) {
     alert("Por favor, preencha ambos os campos.");
     return;
   }
 
-  // Autenticando o usuário com Firebase Authentication
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      // Login bem-sucedido
-      const user = userCredential.user;
       alert("Login realizado com sucesso!");
-
-      // Redirecionando para a página 'home' específica do usuário
+      const user = userCredential.user;
       const userHomePage = `./home.html?uid=${user.uid}`;
-      window.location.href = userHomePage; // Redireciona para a página do usuário
+      window.location.href = userHomePage;
     })
     .catch((error) => {
-      // Exibindo erro se o login falhar
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      alert(`Erro ao fazer login: ${errorMessage}`);
+      alert(`Erro ao fazer login: ${error.message}`);
+    });
+});
+
+// Login com Google
+googleButton.addEventListener("click", (event) => {
+  event.preventDefault();
+
+  const provider = new GoogleAuthProvider();
+
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      const user = result.user;
+      alert(`Bem-vindo(a), ${user.displayName}!`);
+      const userHomePage = `./home.html?uid=${user.uid}`;
+      window.location.href = userHomePage;
+    })
+    .catch((error) => {
+      alert(`Erro ao fazer login com o Google: ${error.message}`);
     });
 });

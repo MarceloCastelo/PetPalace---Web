@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PetVita</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
 </head>
+
 <body class="bg-gray-100">
 
     <div class="flex flex-col md:flex-row items-center justify-center min-h-screen">
@@ -24,34 +28,50 @@
                     <!-- Email Input -->
                     <div class="mb-6">
                         <label for="InputEmail1" class="block text-gray-700 font-medium mb-2">Email</label>
-                        <input type="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]" id="InputEmail1" placeholder="Digite seu e-mail">
+                        <input type="email"
+                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]"
+                            id="InputEmail1" placeholder="Digite seu e-mail">
                     </div>
 
                     <!-- Password Input -->
                     <div class="mb-6">
                         <label for="exampleInputPassword1" class="block text-gray-700 font-medium mb-2">Senha</label>
-                        <input type="password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]" id="exampleInputPassword1" placeholder="Digite sua senha">
+                        <input type="password"
+                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]"
+                            id="exampleInputPassword1" placeholder="Digite sua senha">
                     </div>
 
                     <!-- Login Button -->
                     <a href="./home.html">
-                        <button type="button" class="w-full bg-[#32936f] text-white py-2 rounded-lg hover:bg-[#26a96c] transition duration-200">
+                        <button type="button"
+                            class="w-full bg-[#32936f] text-white py-2 rounded-lg hover:bg-[#26a96c] transition duration-200">
                             Entrar
                         </button>
                     </a>
 
+                    <!-- Botão de Login com Google -->
+                    <button id="google-login"
+    class="w-full flex items-center justify-center bg-white text-black py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition duration-200 mt-4">
+    <i class="fa-brands fa-google text-xl mr-3" style="color: #24a96c;"></i> <!-- Ícone do Google -->
+    Entrar com Google
+</button>
+
+
+
                     <!-- First Access Link -->
                     <p class="text-center mt-6 text-gray-700">Primeiro Acesso?</p>
                     <a href="../pages/register.html">
-                        <button type="button" class="w-full text-[#32936f] py-2 rounded-lg hover:underline">Clique Aqui</button>
+                        <button type="button" class="w-full text-[#32936f] py-2 rounded-lg hover:underline">Clique
+                            Aqui</button>
                     </a>
                 </section>
 
-            </form>     
+            </form>
         </div>
 
     </div>
 
     <script type="module" src="../script/login.js"></script>
 </body>
+
 </html>

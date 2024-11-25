@@ -1,6 +1,6 @@
 // Importar Firebase v11
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 // Configuração do Firebase
@@ -27,6 +27,9 @@ const examDateInput = document.getElementById('exam_date');
 const resultsInput = document.getElementById('results');
 const tableBody = document.getElementById('exameTableBody');
 
+// Variável para armazenar o ID do exame em edição
+let currentExamKey = null;
+
 // Verifica autenticação do usuário e carrega o pet selecionado
 onAuthStateChanged(auth, (user) => {
     if (!user) {
@@ -42,7 +45,7 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Função para salvar o exame no Firebase dentro do pet
+// Função para salvar ou atualizar o exame no Firebase
 form.addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -59,7 +62,17 @@ form.addEventListener('submit', function(event) {
 
     const userId = auth.currentUser.uid;  // Obtém o ID do usuário autenticado
 
-    // Adiciona o exame no Firebase dentro do pet específico
+    if (currentExamKey) {
+        // Se houver um exame em edição, chama a função de atualização
+        updateExam(userId, petId, currentExamKey, examName, vetName, examDate, results);
+    } else {
+        // Se não houver exame em edição, cria um novo
+        addExam(userId, petId, examName, vetName, examDate, results);
+    }
+});
+
+// Função para adicionar um novo exame no Firebase
+function addExam(userId, petId, examName, vetName, examDate, results) {
     const newExamRef = push(ref(database, `Users/${userId}/Pets/${petId}/Exames`));
     set(newExamRef, {
         exam_name: examName,
@@ -71,7 +84,7 @@ form.addEventListener('submit', function(event) {
         form.reset();
         displayExams(userId, petId);  // Atualiza os exames na tabela
     }).catch((error) => console.error('Erro ao salvar exame:', error));
-});
+}
 
 // Função para exibir os exames na tabela
 function displayExams(userId, petId) {
@@ -91,19 +104,68 @@ function displayExams(userId, petId) {
                         <td class="py-2 px-4">${exam.vet_name}</td>
                         <td class="py-2 px-4">${exam.exam_date}</td>
                         <td class="py-2 px-4">${exam.results}</td>
+                        <td class="py-2 px-4 text-center">
+                            <button class="edit-btn bg-blue-500 text-white p-1 rounded-lg" data-key="${key}">Editar</button>
+                            <button class="delete-btn bg-red-500 text-white p-1 rounded-lg ml-2" data-key="${key}">Excluir</button>
+                        </td>
                     `;
                     tableBody.appendChild(tr);
+
+                    // Adicionar evento de edição
+                    tr.querySelector(".edit-btn").addEventListener("click", function() {
+                        const examKey = this.getAttribute("data-key");
+                        editExam(userId, petId, examKey);
+                    });
+
+                    // Adicionar evento de exclusão
+                    tr.querySelector(".delete-btn").addEventListener("click", function() {
+                        const examKey = this.getAttribute("data-key");
+                        deleteExam(userId, petId, examKey);
+                    });
                 }
             }
         }
     });
 }
 
-// Carrega os exames ao carregar a página
-window.onload = function() {
-    const petId = localStorage.getItem('selectedPetId');
-    if (!petId) {
-        alert('Nenhum pet selecionado!');
-        window.location.href = './dashboard.html';
-    }
-};
+// Função para editar o exame
+function editExam(userId, petId, examKey) {
+    const examRef = ref(database, `Users/${userId}/Pets/${petId}/Exames/${examKey}`);
+    onValue(examRef, function(snapshot) {
+        const exam = snapshot.val();
+        if (exam) {
+            examNameInput.value = exam.exam_name;
+            vetNameInput.value = exam.vet_name;
+            examDateInput.value = exam.exam_date;
+            resultsInput.value = exam.results;
+
+            // Guardar a chave do exame em edição
+            currentExamKey = examKey;
+        }
+    });
+}
+
+// Função para atualizar o exame no Firebase
+function updateExam(userId, petId, examKey, examName, vetName, examDate, results) {
+    const examRef = ref(database, `Users/${userId}/Pets/${petId}/Exames/${examKey}`);
+    set(examRef, {
+        exam_name: examName,
+        vet_name: vetName,
+        exam_date: examDate,
+        results: results
+    }).then(() => {
+        alert('Exame atualizado com sucesso!');
+        form.reset();
+        currentExamKey = null; // Limpar a chave do exame em edição
+        displayExams(userId, petId);  // Atualiza os exames na tabela
+    }).catch((error) => console.error('Erro ao atualizar exame:', error));
+}
+
+// Função para excluir o exame
+function deleteExam(userId, petId, examKey) {
+    const examRef = ref(database, `Users/${userId}/Pets/${petId}/Exames/${examKey}`);
+    remove(examRef).then(() => {
+        alert('Exame excluído com sucesso!');
+        displayExams(userId, petId);  // Atualiza a tabela após a exclusão
+    }).catch((error) => console.error('Erro ao excluir exame:', error));
+}

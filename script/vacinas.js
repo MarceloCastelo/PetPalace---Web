@@ -1,6 +1,6 @@
 // Importar Firebase v11
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 // Configuração do Firebase
@@ -27,6 +27,9 @@ const vaccineDateInput = document.getElementById('vaccine_date');
 const descriptionInput = document.getElementById('description');
 const tableBody = document.getElementById('vacinaTableBody');
 
+// Variável para armazenar o ID da vacina em edição
+let currentVaccineKey = null;
+
 // Verifica a autenticação do usuário e carrega o pet selecionado
 onAuthStateChanged(auth, (user) => {
     if (!user) {
@@ -42,7 +45,7 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Função para salvar a vacina no Firebase dentro do pet
+// Função para salvar ou atualizar a vacina no Firebase
 form.addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -59,7 +62,17 @@ form.addEventListener('submit', function(event) {
 
     const userId = auth.currentUser.uid;  // Obtém o ID do usuário autenticado
 
-    // Adiciona a vacina no Firebase dentro do pet específico
+    if (currentVaccineKey) {
+        // Se houver uma vacina em edição, chama a função de atualização
+        updateVaccine(userId, petId, currentVaccineKey, vaccineName, vetName, vaccineDate, description);
+    } else {
+        // Se não houver vacina em edição, cria uma nova
+        addVaccine(userId, petId, vaccineName, vetName, vaccineDate, description);
+    }
+});
+
+// Função para adicionar uma nova vacina no Firebase
+function addVaccine(userId, petId, vaccineName, vetName, vaccineDate, description) {
     const newVaccineRef = push(ref(database, `Users/${userId}/Pets/${petId}/Vacinas`));
     set(newVaccineRef, {
         vaccine_name: vaccineName,
@@ -71,7 +84,7 @@ form.addEventListener('submit', function(event) {
         form.reset();
         displayVaccines(userId, petId);  // Atualiza as vacinas na tabela
     }).catch((error) => console.error('Erro ao salvar vacina:', error));
-});
+}
 
 // Função para exibir as vacinas na tabela
 function displayVaccines(userId, petId) {
@@ -91,12 +104,70 @@ function displayVaccines(userId, petId) {
                         <td class="py-2 px-4">${vaccine.vet_name}</td>
                         <td class="py-2 px-4">${vaccine.vaccine_date}</td>
                         <td class="py-2 px-4">${vaccine.description}</td>
+                        <td class="py-2 px-4 text-center">
+                            <button class="edit-btn bg-blue-500 text-white p-1 rounded-lg" data-key="${key}">Editar</button>
+                            <button class="delete-btn bg-red-500 text-white p-1 rounded-lg ml-2" data-key="${key}">Excluir</button>
+                        </td>
                     `;
                     tableBody.appendChild(tr);
+
+                    // Adicionar evento de edição
+                    tr.querySelector(".edit-btn").addEventListener("click", function() {
+                        const vaccineKey = this.getAttribute("data-key");
+                        editVaccine(userId, petId, vaccineKey);
+                    });
+
+                    // Adicionar evento de exclusão
+                    tr.querySelector(".delete-btn").addEventListener("click", function() {
+                        const vaccineKey = this.getAttribute("data-key");
+                        deleteVaccine(userId, petId, vaccineKey);
+                    });
                 }
             }
         }
     });
+}
+
+// Função para editar a vacina
+function editVaccine(userId, petId, vaccineKey) {
+    const vaccineRef = ref(database, `Users/${userId}/Pets/${petId}/Vacinas/${vaccineKey}`);
+    onValue(vaccineRef, function(snapshot) {
+        const vaccine = snapshot.val();
+        if (vaccine) {
+            vaccineNameInput.value = vaccine.vaccine_name;
+            vetNameInput.value = vaccine.vet_name;
+            vaccineDateInput.value = vaccine.vaccine_date;
+            descriptionInput.value = vaccine.description;
+
+            // Guardar a chave da vacina em edição
+            currentVaccineKey = vaccineKey;
+        }
+    });
+}
+
+// Função para atualizar a vacina no Firebase
+function updateVaccine(userId, petId, vaccineKey, vaccineName, vetName, vaccineDate, description) {
+    const vaccineRef = ref(database, `Users/${userId}/Pets/${petId}/Vacinas/${vaccineKey}`);
+    set(vaccineRef, {
+        vaccine_name: vaccineName,
+        vet_name: vetName,
+        vaccine_date: vaccineDate,
+        description: description
+    }).then(() => {
+        alert('Vacina atualizada com sucesso!');
+        form.reset();
+        currentVaccineKey = null; // Limpar a chave da vacina em edição
+        displayVaccines(userId, petId);  // Atualiza as vacinas na tabela
+    }).catch((error) => console.error('Erro ao atualizar vacina:', error));
+}
+
+// Função para excluir a vacina
+function deleteVaccine(userId, petId, vaccineKey) {
+    const vaccineRef = ref(database, `Users/${userId}/Pets/${petId}/Vacinas/${vaccineKey}`);
+    remove(vaccineRef).then(() => {
+        alert('Vacina excluída com sucesso!');
+        displayVaccines(userId, petId);  // Atualiza a tabela após a exclusão
+    }).catch((error) => console.error('Erro ao excluir vacina:', error));
 }
 
 // Carrega as vacinas ao carregar a página

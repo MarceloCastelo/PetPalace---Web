@@ -1,6 +1,6 @@
 // Importar Firebase v11
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 // Configuração do Firebase
@@ -27,6 +27,9 @@ const procedureDateInput = document.getElementById('procedure_date');
 const descriptionInput = document.getElementById('description');
 const tableBody = document.getElementById('procedimentoTableBody');
 
+// Variável para armazenar o ID do procedimento em edição
+let currentProcedureKey = null;
+
 // Verifica autenticação do usuário e carrega o pet selecionado
 onAuthStateChanged(auth, (user) => {
     if (!user) {
@@ -42,7 +45,7 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Função para salvar o procedimento no Firebase dentro do pet
+// Função para salvar ou atualizar o procedimento no Firebase
 form.addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -59,7 +62,17 @@ form.addEventListener('submit', function(event) {
 
     const userId = auth.currentUser.uid;  // Obtém o ID do usuário autenticado
 
-    // Adiciona o procedimento no Firebase dentro do pet específico
+    if (currentProcedureKey) {
+        // Se houver um procedimento em edição, chama a função de atualização
+        updateProcedure(userId, petId, currentProcedureKey, procedureName, vetName, procedureDate, description);
+    } else {
+        // Se não houver procedimento em edição, cria um novo
+        addProcedure(userId, petId, procedureName, vetName, procedureDate, description);
+    }
+});
+
+// Função para adicionar um novo procedimento no Firebase
+function addProcedure(userId, petId, procedureName, vetName, procedureDate, description) {
     const newProcedureRef = push(ref(database, `Users/${userId}/Pets/${petId}/Procedimentos`));
     set(newProcedureRef, {
         procedure_name: procedureName,
@@ -71,7 +84,7 @@ form.addEventListener('submit', function(event) {
         form.reset();
         displayProcedures(userId, petId);  // Atualiza os procedimentos na tabela
     }).catch((error) => console.error('Erro ao salvar procedimento:', error));
-});
+}
 
 // Função para exibir os procedimentos na tabela
 function displayProcedures(userId, petId) {
@@ -91,12 +104,70 @@ function displayProcedures(userId, petId) {
                         <td class="py-2 px-4">${procedure.vet_name}</td>
                         <td class="py-2 px-4">${procedure.procedure_date}</td>
                         <td class="py-2 px-4">${procedure.description}</td>
+                        <td class="py-2 px-4 text-center">
+                            <button class="edit-btn bg-blue-500 text-white p-1 rounded-lg" data-key="${key}">Editar</button>
+                            <button class="delete-btn bg-red-500 text-white p-1 rounded-lg ml-2" data-key="${key}">Excluir</button>
+                        </td>
                     `;
                     tableBody.appendChild(tr);
+
+                    // Adicionar evento de edição
+                    tr.querySelector(".edit-btn").addEventListener("click", function() {
+                        const procedureKey = this.getAttribute("data-key");
+                        editProcedure(userId, petId, procedureKey);
+                    });
+
+                    // Adicionar evento de exclusão
+                    tr.querySelector(".delete-btn").addEventListener("click", function() {
+                        const procedureKey = this.getAttribute("data-key");
+                        deleteProcedure(userId, petId, procedureKey);
+                    });
                 }
             }
         }
     });
+}
+
+// Função para editar o procedimento
+function editProcedure(userId, petId, procedureKey) {
+    const procedureRef = ref(database, `Users/${userId}/Pets/${petId}/Procedimentos/${procedureKey}`);
+    onValue(procedureRef, function(snapshot) {
+        const procedure = snapshot.val();
+        if (procedure) {
+            procedureNameInput.value = procedure.procedure_name;
+            vetNameInput.value = procedure.vet_name;
+            procedureDateInput.value = procedure.procedure_date;
+            descriptionInput.value = procedure.description;
+
+            // Guardar a chave do procedimento em edição
+            currentProcedureKey = procedureKey;
+        }
+    });
+}
+
+// Função para atualizar o procedimento no Firebase
+function updateProcedure(userId, petId, procedureKey, procedureName, vetName, procedureDate, description) {
+    const procedureRef = ref(database, `Users/${userId}/Pets/${petId}/Procedimentos/${procedureKey}`);
+    set(procedureRef, {
+        procedure_name: procedureName,
+        vet_name: vetName,
+        procedure_date: procedureDate,
+        description: description
+    }).then(() => {
+        alert('Procedimento atualizado com sucesso!');
+        form.reset();
+        currentProcedureKey = null; // Limpar a chave do procedimento em edição
+        displayProcedures(userId, petId);  // Atualiza os procedimentos na tabela
+    }).catch((error) => console.error('Erro ao atualizar procedimento:', error));
+}
+
+// Função para excluir o procedimento
+function deleteProcedure(userId, petId, procedureKey) {
+    const procedureRef = ref(database, `Users/${userId}/Pets/${petId}/Procedimentos/${procedureKey}`);
+    remove(procedureRef).then(() => {
+        alert('Procedimento excluído com sucesso!');
+        displayProcedures(userId, petId);  // Atualiza a tabela após a exclusão
+    }).catch((error) => console.error('Erro ao excluir procedimento:', error));
 }
 
 // Carrega os procedimentos ao carregar a página

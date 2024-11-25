@@ -44,7 +44,7 @@ loginButton.addEventListener("click", (event) => {
 
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      alert("Login realizado com sucesso!");
+      // alert("Login realizado com sucesso!");
       const user = userCredential.user;
       const userHomePage = `./home.html?uid=${user.uid}`;
       window.location.href = userHomePage;
@@ -63,7 +63,7 @@ googleButton.addEventListener("click", (event) => {
   signInWithPopup(auth, provider)
     .then((result) => {
       const user = result.user;
-      alert(`Bem-vindo(a), ${user.displayName}!`);
+      // alert(`Bem-vindo(a), ${user.displayName}!`);
       const userHomePage = `./home.html?uid=${user.uid}`;
       window.location.href = userHomePage;
     })

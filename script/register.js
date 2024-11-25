@@ -39,7 +39,7 @@ submit.addEventListener("click", function(event){
     .then((userCredential) => {
       // Usuário criado com sucesso
       const user = userCredential.user;
-      alert(`Usuário ${nome} cadastrado com sucesso!`);
+      // alert(`Usuário ${nome} cadastrado com sucesso!`);
       
       // Aqui você pode adicionar lógica adicional, como salvar o nome e o telefone no Firestore ou Realtime Database, se necessário.
     })

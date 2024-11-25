@@ -80,7 +80,7 @@ function addExam(userId, petId, examName, vetName, examDate, results) {
         exam_date: examDate,
         results: results
     }).then(() => {
-        alert('Exame salvo com sucesso!');
+        // alert('Exame salvo com sucesso!');
         form.reset();
         displayExams(userId, petId);  // Atualiza os exames na tabela
     }).catch((error) => console.error('Erro ao salvar exame:', error));
@@ -154,7 +154,7 @@ function updateExam(userId, petId, examKey, examName, vetName, examDate, results
         exam_date: examDate,
         results: results
     }).then(() => {
-        alert('Exame atualizado com sucesso!');
+        // alert('Exame atualizado com sucesso!');
         form.reset();
         currentExamKey = null; // Limpar a chave do exame em edição
         displayExams(userId, petId);  // Atualiza os exames na tabela
@@ -165,7 +165,7 @@ function updateExam(userId, petId, examKey, examName, vetName, examDate, results
 function deleteExam(userId, petId, examKey) {
     const examRef = ref(database, `Users/${userId}/Pets/${petId}/Exames/${examKey}`);
     remove(examRef).then(() => {
-        alert('Exame excluído com sucesso!');
+        // alert('Exame excluído com sucesso!');
         displayExams(userId, petId);  // Atualiza a tabela após a exclusão
     }).catch((error) => console.error('Erro ao excluir exame:', error));
 }

@@ -80,7 +80,7 @@ function addConsultation(userId, petId, consultationReason, vetName, consultatio
         consultation_date: consultationDate,
         description: description
     }).then(() => {
-        alert('Consulta salva com sucesso!');
+        // alert('Consulta salva com sucesso!');
         form.reset();
         displayConsultations(userId, petId); // Atualiza as consultas na tabela
     }).catch((error) => console.error('Erro ao salvar consulta:', error));
@@ -154,7 +154,7 @@ function updateConsultation(userId, petId, consultationKey, consultationReason, 
         consultation_date: consultationDate,
         description: description
     }).then(() => {
-        alert('Consulta atualizada com sucesso!');
+        // alert('Consulta atualizada com sucesso!');
         form.reset();
         currentConsultationKey = null; // Limpar a chave da consulta em edição
         displayConsultations(userId, petId); // Atualiza as consultas na tabela
@@ -165,7 +165,7 @@ function updateConsultation(userId, petId, consultationKey, consultationReason, 
 function deleteConsultation(userId, petId, consultationKey) {
     const consultationRef = ref(database, `Users/${userId}/Pets/${petId}/Consultas/${consultationKey}`);
     remove(consultationRef).then(() => {
-        alert('Consulta excluída com sucesso!');
+        // alert('Consulta excluída com sucesso!');
         displayConsultations(userId, petId); // Atualiza a tabela após a exclusão
     }).catch((error) => console.error('Erro ao excluir consulta:', error));
 }

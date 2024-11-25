@@ -154,7 +154,7 @@ function updateProcedure(userId, petId, procedureKey, procedureName, vetName, pr
         procedure_date: procedureDate,
         description: description
     }).then(() => {
-        alert('Procedimento atualizado com sucesso!');
+        // alert('Procedimento atualizado com sucesso!');
         form.reset();
         currentProcedureKey = null; // Limpar a chave do procedimento em edição
         displayProcedures(userId, petId);  // Atualiza os procedimentos na tabela
@@ -165,7 +165,7 @@ function updateProcedure(userId, petId, procedureKey, procedureName, vetName, pr
 function deleteProcedure(userId, petId, procedureKey) {
     const procedureRef = ref(database, `Users/${userId}/Pets/${petId}/Procedimentos/${procedureKey}`);
     remove(procedureRef).then(() => {
-        alert('Procedimento excluído com sucesso!');
+        // alert('Procedimento excluído com sucesso!');
         displayProcedures(userId, petId);  // Atualiza a tabela após a exclusão
     }).catch((error) => console.error('Erro ao excluir procedimento:', error));
 }

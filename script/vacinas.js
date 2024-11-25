@@ -80,7 +80,7 @@ function addVaccine(userId, petId, vaccineName, vetName, vaccineDate, descriptio
         vaccine_date: vaccineDate,
         description: description
     }).then(() => {
-        alert('Vacina salva com sucesso!');
+        // alert('Vacina salva com sucesso!');
         form.reset();
         displayVaccines(userId, petId);  // Atualiza as vacinas na tabela
     }).catch((error) => console.error('Erro ao salvar vacina:', error));
@@ -154,7 +154,7 @@ function updateVaccine(userId, petId, vaccineKey, vaccineName, vetName, vaccineD
         vaccine_date: vaccineDate,
         description: description
     }).then(() => {
-        alert('Vacina atualizada com sucesso!');
+        // alert('Vacina atualizada com sucesso!');
         form.reset();
         currentVaccineKey = null; // Limpar a chave da vacina em edição
         displayVaccines(userId, petId);  // Atualiza as vacinas na tabela
@@ -165,7 +165,7 @@ function updateVaccine(userId, petId, vaccineKey, vaccineName, vetName, vaccineD
 function deleteVaccine(userId, petId, vaccineKey) {
     const vaccineRef = ref(database, `Users/${userId}/Pets/${petId}/Vacinas/${vaccineKey}`);
     remove(vaccineRef).then(() => {
-        alert('Vacina excluída com sucesso!');
+        // alert('Vacina excluída com sucesso!');
         displayVaccines(userId, petId);  // Atualiza a tabela após a exclusão
     }).catch((error) => console.error('Erro ao excluir vacina:', error));
 }

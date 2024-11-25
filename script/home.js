@@ -131,7 +131,7 @@ function savePet(imageData, petName, petType, petGender) {
             dataImage: imageData,
             key: petRef.key
         }).then(() => {
-            alert('Pet salvo com sucesso!');
+            // alert('Pet salvo com sucesso!');
             loadPets();
             closeModal();
         }).catch((error) => console.error('Erro ao salvar o pet:', error));
@@ -154,7 +154,7 @@ function updatePet(imageData, petName, petType, petGender) {
                 dataImage: imageData || petData.dataImage,
                 key: currentPetId
             }).then(() => {
-                alert('Pet atualizado com sucesso!');
+                // alert('Pet atualizado com sucesso!');
                 loadPets();
                 closeModal();
             }).catch((error) => console.error('Erro ao atualizar o pet:', error));
@@ -171,7 +171,7 @@ function removePet(petId) {
 
         if (confirm('Tem certeza que deseja remover este pet?')) {
             remove(petRef).then(() => {
-                alert('Pet removido com sucesso!');
+                // alert('Pet removido com sucesso!');
                 loadPets();
             }).catch((error) => console.error('Erro ao remover o pet:', error));
         }

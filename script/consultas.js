@@ -1,6 +1,7 @@
 // Importar Firebase v11
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 // Configuração do Firebase
 const firebaseConfig = {
@@ -16,6 +17,7 @@ const firebaseConfig = {
 // Inicializar o Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+const auth = getAuth();
 
 // Referências do formulário e da tabela
 const form = document.getElementById('consultaForm');
@@ -25,53 +27,83 @@ const consultationDateInput = document.getElementById('consultation_date');
 const descriptionInput = document.getElementById('description');
 const tableBody = document.getElementById('consultaTableBody');
 
-// Função para salvar a consulta no Firebase
+// Verifica autenticação do usuário e carrega o pet selecionado
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        window.location.href = './login.html'; // Redireciona para o login se não houver autenticação
+    } else {
+        const petId = localStorage.getItem('selectedPetId');
+        if (!petId) {
+            alert('Nenhum pet selecionado!');
+            window.location.href = './dashboard.html'; // Redireciona se não houver pet selecionado
+            return;
+        }
+        displayConsultations(user.uid, petId); // Carrega as consultas do pet
+    }
+});
+
+// Função para salvar a consulta no Firebase dentro do pet
 form.addEventListener('submit', function(event) {
     event.preventDefault();
 
-    const consultationReason = consultationReasonInput.value;  // Alterado para 'consultation_reason'
+    const consultationReason = consultationReasonInput.value; 
     const vetName = vetNameInput.value;
     const consultationDate = consultationDateInput.value;
     const description = descriptionInput.value;
 
-    // Adicionar a consulta no Firebase Realtime Database
-    const newConsultationRef = push(ref(database, 'consultas'));
+    const petId = localStorage.getItem('selectedPetId');
+    if (!petId) {
+        alert('Nenhum pet selecionado!');
+        return;
+    }
+
+    const userId = auth.currentUser.uid;  // Obtém o ID do usuário autenticado
+
+    // Adiciona a consulta no Firebase dentro do pet específico
+    const newConsultationRef = push(ref(database, `Users/${userId}/Pets/${petId}/Consultas`));
     set(newConsultationRef, {
-        consultation_reason: consultationReason,  // Alterado para 'consultation_reason'
+        consultation_reason: consultationReason,
         vet_name: vetName,
         consultation_date: consultationDate,
         description: description
-    });
-
-    // Limpar os campos do formulário após o envio
-    form.reset();
+    }).then(() => {
+        alert('Consulta salva com sucesso!');
+        form.reset();
+        displayConsultations(userId, petId);  // Atualiza as consultas na tabela
+    }).catch((error) => console.error('Erro ao salvar consulta:', error));
 });
 
 // Função para exibir as consultas na tabela
-function displayConsultations() {
-    const consultationsRef = ref(database, 'consultas');
+function displayConsultations(userId, petId) {
+    const consultationsRef = ref(database, `Users/${userId}/Pets/${petId}/Consultas`);
     onValue(consultationsRef, function(snapshot) {
         const consultations = snapshot.val();
         tableBody.innerHTML = ""; // Limpar a tabela antes de preencher
 
-        for (const key in consultations) {
-            if (consultations.hasOwnProperty(key)) {
-                const consultation = consultations[key];
-                const tr = document.createElement("tr");
-                tr.classList.add("border-b");
-                tr.innerHTML = `
-                    <td class="py-2 px-4">${consultation.consultation_reason}</td>  <!-- Alterado para 'consultation_reason' -->
-                    <td class="py-2 px-4">${consultation.vet_name}</td>
-                    <td class="py-2 px-4">${consultation.consultation_date}</td>
-                    <td class="py-2 px-4">${consultation.description}</td>
-                `;
-                tableBody.appendChild(tr);
+        if (consultations) {
+            for (const key in consultations) {
+                if (consultations.hasOwnProperty(key)) {
+                    const consultation = consultations[key];
+                    const tr = document.createElement("tr");
+                    tr.classList.add("border-b");
+                    tr.innerHTML = `
+                        <td class="py-2 px-4">${consultation.consultation_reason}</td>
+                        <td class="py-2 px-4">${consultation.vet_name}</td>
+                        <td class="py-2 px-4">${consultation.consultation_date}</td>
+                        <td class="py-2 px-4">${consultation.description}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                }
             }
         }
     });
 }
 
-// Chamar a função para carregar as consultas quando a página for carregada
+// Carrega as consultas ao carregar a página
 window.onload = function() {
-    displayConsultations();
+    const petId = localStorage.getItem('selectedPetId');
+    if (!petId) {
+        alert('Nenhum pet selecionado!');
+        window.location.href = './dashboard.html';
+    }
 };

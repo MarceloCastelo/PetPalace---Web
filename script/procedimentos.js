@@ -1,6 +1,7 @@
 // Importar Firebase v11
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 // Configuração do Firebase
 const firebaseConfig = {
@@ -16,6 +17,7 @@ const firebaseConfig = {
 // Inicializar o Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+const auth = getAuth();
 
 // Referências do formulário e da tabela
 const form = document.getElementById('procedimentoForm');
@@ -25,7 +27,22 @@ const procedureDateInput = document.getElementById('procedure_date');
 const descriptionInput = document.getElementById('description');
 const tableBody = document.getElementById('procedimentoTableBody');
 
-// Função para salvar o procedimento no Firebase
+// Verifica autenticação do usuário e carrega o pet selecionado
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        window.location.href = './login.html'; // Redireciona para o login se não houver autenticação
+    } else {
+        const petId = localStorage.getItem('selectedPetId');
+        if (!petId) {
+            alert('Nenhum pet selecionado!');
+            window.location.href = './dashboard.html'; // Redireciona se não houver pet selecionado
+            return;
+        }
+        displayProcedures(user.uid, petId); // Carrega os procedimentos do pet
+    }
+});
+
+// Função para salvar o procedimento no Firebase dentro do pet
 form.addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -34,44 +51,59 @@ form.addEventListener('submit', function(event) {
     const procedureDate = procedureDateInput.value;
     const description = descriptionInput.value;
 
-    // Adicionar o procedimento no Firebase Realtime Database
-    const newProcedureRef = push(ref(database, 'procedimentos'));
+    const petId = localStorage.getItem('selectedPetId');
+    if (!petId) {
+        alert('Nenhum pet selecionado!');
+        return;
+    }
+
+    const userId = auth.currentUser.uid;  // Obtém o ID do usuário autenticado
+
+    // Adiciona o procedimento no Firebase dentro do pet específico
+    const newProcedureRef = push(ref(database, `Users/${userId}/Pets/${petId}/Procedimentos`));
     set(newProcedureRef, {
         procedure_name: procedureName,
         vet_name: vetName,
         procedure_date: procedureDate,
         description: description
-    });
-
-    // Limpar os campos do formulário após o envio
-    form.reset();
+    }).then(() => {
+        alert('Procedimento salvo com sucesso!');
+        form.reset();
+        displayProcedures(userId, petId);  // Atualiza os procedimentos na tabela
+    }).catch((error) => console.error('Erro ao salvar procedimento:', error));
 });
 
 // Função para exibir os procedimentos na tabela
-function displayProcedures() {
-    const proceduresRef = ref(database, 'procedimentos');
+function displayProcedures(userId, petId) {
+    const proceduresRef = ref(database, `Users/${userId}/Pets/${petId}/Procedimentos`);
     onValue(proceduresRef, function(snapshot) {
         const procedures = snapshot.val();
         tableBody.innerHTML = ""; // Limpar a tabela antes de preencher
 
-        for (const key in procedures) {
-            if (procedures.hasOwnProperty(key)) {
-                const procedure = procedures[key];
-                const tr = document.createElement("tr");
-                tr.classList.add("border-b");
-                tr.innerHTML = `
-                    <td class="py-2 px-4">${procedure.procedure_name}</td>
-                    <td class="py-2 px-4">${procedure.vet_name}</td>
-                    <td class="py-2 px-4">${procedure.procedure_date}</td>
-                    <td class="py-2 px-4">${procedure.description}</td>
-                `;
-                tableBody.appendChild(tr);
+        if (procedures) {
+            for (const key in procedures) {
+                if (procedures.hasOwnProperty(key)) {
+                    const procedure = procedures[key];
+                    const tr = document.createElement("tr");
+                    tr.classList.add("border-b");
+                    tr.innerHTML = `
+                        <td class="py-2 px-4">${procedure.procedure_name}</td>
+                        <td class="py-2 px-4">${procedure.vet_name}</td>
+                        <td class="py-2 px-4">${procedure.procedure_date}</td>
+                        <td class="py-2 px-4">${procedure.description}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                }
             }
         }
     });
 }
 
-// Chamar a função para carregar os procedimentos quando a página for carregada
+// Carrega os procedimentos ao carregar a página
 window.onload = function() {
-    displayProcedures();
+    const petId = localStorage.getItem('selectedPetId');
+    if (!petId) {
+        alert('Nenhum pet selecionado!');
+        window.location.href = './dashboard.html';
+    }
 };

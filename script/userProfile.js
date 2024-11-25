@@ -1,3 +1,7 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
 // Configuração do Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyCV5itkomLJsUWOTq6rgs3DsUa7LB4giMU",
@@ -9,55 +13,97 @@ const firebaseConfig = {
     appId: "1:154097214013:web:383b976afe2f03fd350054"
 };
 
-// Importando funções do Firebase
-import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-
 // Inicializando o Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const database = getDatabase(app);
 
-// Função para preencher os dados do usuário no formulário
+// Função para carregar os dados do usuário
 function loadUserData(user) {
     if (user) {
-        // Verificando se o nome (displayName) está presente, se não, mostra uma mensagem padrão
-        const nome = user.displayName ? user.displayName : "Nome não disponível";
-        const telefone = user.phoneNumber ? user.phoneNumber : "Telefone não disponível";
-        
-        // Preenchendo os campos com as informações do usuário
-        document.getElementById("nome").value = nome;
-        document.getElementById("email").value = user.email || "Email não disponível";
-        document.getElementById("telefone").value = telefone;
-
-        // Exibindo o botão de logout
+        const userRef = ref(database, `users/${user.uid}`);
+        get(userRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                document.getElementById("nome").value = data.nome || user.displayName || "Nome não disponível";
+                document.getElementById("email").value = data.email || user.email || "Email não disponível";
+                document.getElementById("telefone").value = data.telefone || "Telefone não disponível";
+                document.getElementById("endereco").value = data.endereco || "Endereço não disponível";
+                document.getElementById("dataNascimento").value = data.dataNascimento || "";
+                document.getElementById("genero").value = data.genero || "nao_informar";
+                if (data.fotoPerfil) {
+                    document.getElementById("fotoPreview").src = data.fotoPerfil;
+                }
+            }
+        });
         document.getElementById("logoutBtn").classList.remove("hidden");
     } else {
-        // Redireciona para a tela de login se o usuário não estiver logado
         alert("Por favor, faça o login.");
-        window.location.href = "./login.html"; // Redireciona para a página de login
+        window.location.href = "/login"; // Redireciona para a página de login
+    }
+}
+
+// Função para salvar os dados do perfil
+function salvarPerfil() {
+    const user = auth.currentUser;
+    if (user) {
+        const nome = document.getElementById("nome").value;
+        const telefone = document.getElementById("telefone").value;
+        const endereco = document.getElementById("endereco").value;
+        const dataNascimento = document.getElementById("dataNascimento").value;
+        const genero = document.getElementById("genero").value;
+        const fotoPerfil = document.getElementById("foto").files[0];
+
+        // Atualizando o perfil no Firebase Authentication
+        updateProfile(user, {
+            displayName: nome,
+        }).catch((error) => console.error("Erro ao atualizar o perfil:", error));
+
+        // Atualizando o perfil no Realtime Database
+        const userRef = ref(database, `users/${user.uid}`);
+        const updates = { nome, telefone, endereco, dataNascimento, genero };
+
+        // Se o usuário adicionou uma foto de perfil
+        if (fotoPerfil) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                updates.fotoPerfil = event.target.result; // Salvar a imagem como base64
+                update(userRef, updates).then(() => {
+                    alert("Perfil atualizado com sucesso!");
+                    loadUserData(user); // Atualiza os dados exibidos
+                });
+            };
+            reader.readAsDataURL(fotoPerfil);
+        } else {
+            update(userRef, updates).then(() => {
+                alert("Perfil atualizado com sucesso!");
+                loadUserData(user);
+            });
+        }
     }
 }
 
 // Função de logout
 function logout() {
-    signOut(auth)
-        .then(() => {
-            alert("Você foi deslogado com sucesso!");
-            window.location.href = "./login.html"; // Redireciona para a página de login após deslogar
-        })
-        .catch((error) => {
-            console.error("Erro ao deslogar:", error.message);
-        });
+    signOut(auth).then(() => {
+        alert("Você foi deslogado com sucesso!");
+        window.location.href = "/login";
+    }).catch((error) => {
+        console.error("Erro ao deslogar:", error.message);
+    });
 }
 
 // Checando se o usuário está logado
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        loadUserData(user); // Carrega os dados do usuário se ele estiver logado
+        loadUserData(user);
     } else {
-        loadUserData(null); // Redireciona para a página de login se o usuário não estiver logado
+        window.location.href = "/login"; // Redireciona para a página de login
     }
 });
 
-// Adicionando o evento de logout
-document.getElementById("logoutBtn").addEventListener("click", logout);
+// Associando eventos
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("salvarBtn").addEventListener("click", salvarPerfil);
+    document.getElementById("logoutBtn").addEventListener("click", logout);
+});

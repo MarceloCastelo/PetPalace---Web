@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut, updateProfile, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
 // Configuração do Firebase
@@ -21,7 +21,7 @@ const database = getDatabase(app);
 // Função para carregar os dados do usuário
 function loadUserData(user) {
     if (user) {
-        const userRef = ref(database, `users/${user.uid}`);
+        const userRef = ref(database, `Users/${user.uid}`); // Corrigido para salvar em 'Users'
         get(userRef).then((snapshot) => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
@@ -60,8 +60,8 @@ function salvarPerfil() {
         }).catch((error) => console.error("Erro ao atualizar o perfil:", error));
 
         // Atualizando o perfil no Realtime Database
-        const userRef = ref(database, `users/${user.uid}`);
-        const updates = { nome, telefone, endereco, dataNascimento, genero };
+        const userRef = ref(database, `Users/${user.uid}`); // Corrigido para salvar em 'Users'
+        const updates = { nome, telefone, endereco, dataNascimento, genero, email: user.email };
 
         // Se o usuário adicionou uma foto de perfil
         if (fotoPerfil) {
@@ -80,6 +80,38 @@ function salvarPerfil() {
                 loadUserData(user);
             });
         }
+    }
+}
+
+// Função para alterar a senha
+function alterarSenha() {
+    const user = auth.currentUser;
+    const senhaAntiga = document.getElementById("senhaAntiga").value;
+    const novaSenha = document.getElementById("novaSenha").value;
+    const confirmarNovaSenha = document.getElementById("confirmarNovaSenha").value;
+
+    if (novaSenha !== confirmarNovaSenha) {
+        alert("As senhas não coincidem.");
+        return;
+    }
+
+    if (user && senhaAntiga && novaSenha) {
+        const credential = EmailAuthProvider.credential(user.email, senhaAntiga);
+        
+        reauthenticateWithCredential(user, credential).then(() => {
+            updatePassword(user, novaSenha).then(() => {
+                alert("Senha alterada com sucesso!");
+                document.getElementById("modalAlterarSenha").classList.add("hidden"); // Fecha o modal
+            }).catch((error) => {
+                console.error("Erro ao alterar a senha:", error);
+                alert("Erro ao alterar a senha.");
+            });
+        }).catch((error) => {
+            console.error("Erro na reautenticação:", error);
+            alert("Senha antiga incorreta.");
+        });
+    } else {
+        alert("Por favor, preencha todos os campos.");
     }
 }
 
@@ -106,4 +138,11 @@ onAuthStateChanged(auth, (user) => {
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("salvarBtn").addEventListener("click", salvarPerfil);
     document.getElementById("logoutBtn").addEventListener("click", logout);
+    document.getElementById("alterarSenhaBtn").addEventListener("click", () => {
+        document.getElementById("modalAlterarSenha").classList.remove("hidden");
+    });
+    document.getElementById("cancelarAlteracao").addEventListener("click", () => {
+        document.getElementById("modalAlterarSenha").classList.add("hidden");
+    });
+    document.getElementById("salvarAlteracao").addEventListener("click", alterarSenha);
 });

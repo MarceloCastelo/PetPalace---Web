@@ -65,8 +65,36 @@
             </div>
         </div>
 
-        <div class="mt-6 flex justify-center">
+        <div class="mt-6 flex justify-center space-x-4">
             <button id="salvarBtn" class="bg-[#26a96c] text-white px-6 py-3 rounded-lg hover:bg-[#2bc016]">Salvar Alterações</button>
+            <button id="alterarSenhaBtn" class="bg-[#32936f] text-white px-6 py-3 rounded-lg hover:bg-[#26a96c]">Alterar Senha</button>
+        </div>
+    </div>
+
+    <!-- Modal para Alteração de Senha -->
+    <div id="modalAlterarSenha" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h3 class="text-lg font-semibold text-[#32936f] mb-4">Alterar Senha</h3>
+            
+            <div>
+                <label for="senhaAntiga" class="block text-[#395e66]">Senha Antiga</label>
+                <input type="password" id="senhaAntiga" class="w-full p-3 mt-2 border rounded-lg bg-[#f0f9f4]" required>
+            </div>
+            
+            <div>
+                <label for="novaSenha" class="block text-[#395e66]">Nova Senha</label>
+                <input type="password" id="novaSenha" class="w-full p-3 mt-2 border rounded-lg bg-[#f0f9f4]" required>
+            </div>
+
+            <div>
+                <label for="confirmarNovaSenha" class="block text-[#395e66]">Confirmar Nova Senha</label>
+                <input type="password" id="confirmarNovaSenha" class="w-full p-3 mt-2 border rounded-lg bg-[#f0f9f4]" required>
+            </div>
+
+            <div class="mt-4 flex justify-between">
+                <button id="cancelarAlteracao" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600">Cancelar</button>
+                <button id="salvarAlteracao" class="bg-[#26a96c] text-white px-6 py-2 rounded-lg hover:bg-[#2bc016]">Salvar</button>
+            </div>
         </div>
     </div>
 

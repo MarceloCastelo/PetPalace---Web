@@ -1,6 +1,6 @@
 // Importando as funções necessárias do SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 // Configuração do Firebase
 const firebaseConfig = {
@@ -19,9 +19,9 @@ const auth = getAuth(app);
 
 // Selecionando o botão de cadastro
 const submit = document.getElementById('btnCadastrar');
-submit.addEventListener("click", function(event){
+submit.addEventListener("click", function(event) {
   event.preventDefault();
-  
+
   // Obtendo os valores dos inputs
   const nome = document.getElementById("NomeUsuario").value;
   const email = document.getElementById("InputEmail").value;
@@ -39,9 +39,17 @@ submit.addEventListener("click", function(event){
     .then((userCredential) => {
       // Usuário criado com sucesso
       const user = userCredential.user;
-      // alert(`Usuário ${nome} cadastrado com sucesso!`);
-      
-      // Aqui você pode adicionar lógica adicional, como salvar o nome e o telefone no Firestore ou Realtime Database, se necessário.
+
+      // Enviando e-mail de verificação
+      sendEmailVerification(user)
+        .then(() => {
+          alert(`Usuário ${nome} cadastrado com sucesso! Um e-mail de verificação foi enviado para ${email}.`);
+        })
+        .catch((error) => {
+          alert(`Erro ao enviar e-mail de verificação: ${error.message}`);
+        });
+
+      // Lógica adicional, como salvar o nome e o telefone no Firestore ou Realtime Database, se necessário.
     })
     .catch((error) => {
       // Exibindo o erro caso o cadastro falhe

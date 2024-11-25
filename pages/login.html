@@ -7,7 +7,6 @@
     <title>PetVita</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
 </head>
 
 <body class="bg-gray-100">
@@ -51,19 +50,23 @@
 
                     <!-- Botão de Login com Google -->
                     <button id="google-login"
-    class="w-full flex items-center justify-center bg-white text-black py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition duration-200 mt-4">
-    <i class="fa-brands fa-google text-xl mr-3" style="color: #24a96c;"></i> <!-- Ícone do Google -->
-    Entrar com Google
-</button>
+                        class="w-full flex items-center justify-center bg-white text-black py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition duration-200 mt-4">
+                        <i class="fa-brands fa-google text-xl mr-3" style="color: #24a96c;"></i> <!-- Ícone do Google -->
+                        Entrar com Google
+                    </button>
 
-
-
-                    <!-- First Access Link -->
-                    <p class="text-center mt-6 text-gray-700">Primeiro Acesso?</p>
-                    <a href="../pages/register.html">
-                        <button type="button" class="w-full text-[#32936f] py-2 rounded-lg hover:underline">Clique
-                            Aqui</button>
-                    </a>
+                    <!-- Forgot Password and Reset Password Links Side by Side -->
+                    <div class="flex justify-center items-center mt-6 space-x-4">
+                        <a href="../pages/trocaSenha.html" 
+                            class="text-[#32936f] font-medium hover:underline">
+                            Esqueceu sua senha?
+                        </a>
+                        <span class="text-gray-400">|</span>
+                        <a href="../pages/register.html" 
+                            class="text-[#32936f] font-medium hover:underline">
+                            Primeiro Acesso?
+                        </a>
+                    </div>
                 </section>
 
             </form>

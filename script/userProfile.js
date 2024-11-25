@@ -119,7 +119,7 @@ function alterarSenha() {
 function logout() {
     signOut(auth).then(() => {
         alert("Você foi deslogado com sucesso!");
-        window.location.href = "/login";
+        window.location.href = "../pages/login.html";
     }).catch((error) => {
         console.error("Erro ao deslogar:", error.message);
     });
@@ -130,7 +130,7 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         loadUserData(user);
     } else {
-        window.location.href = "/login"; // Redireciona para a página de login
+        window.location.href = "../pages/login.html"; // Redireciona para a página de login
     }
 });
 

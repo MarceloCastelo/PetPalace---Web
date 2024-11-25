@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trocar Senha - PetVita</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+
+    <div class="flex flex-col items-center justify-center min-h-screen">
+
+        <!-- Form Container -->
+        <div class="w-full md:w-1/3 p-6">
+            <form class="bg-white shadow-lg rounded-lg p-8">
+                <!-- Logo and Title -->
+                <section>
+                    <div class="text-center mb-8">
+                        <h1 class="text-3xl font-bold text-[#32936f]">Trocar Senha</h1>
+                        <img src="../assets/Logo1.png" alt="Logo" class="mx-auto mt-4 w-24 h-24" />
+                    </div>
+
+                    <!-- Email Input -->
+                    <div class="mb-6">
+                        <label for="resetEmail" class="block text-gray-700 font-medium mb-2">E-mail</label>
+                        <input type="email" id="resetEmail"
+                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]"
+                            placeholder="Digite seu e-mail">
+                    </div>
+
+                    <!-- Reset Password Button -->
+                    <button id="resetPasswordButton" type="button"
+                        class="w-full bg-[#32936f] text-white py-2 rounded-lg hover:bg-[#26a96c] transition duration-200">
+                        Enviar Link de Redefinição
+                    </button>
+
+                    <!-- Link to Login -->
+                    <p class="text-center mt-6 text-gray-700">Lembrou sua senha?</p>
+                    <a href="../pages/login.html">
+                        <button type="button" class="w-full text-[#32936f] py-2 rounded-lg hover:underline">
+                            Voltar ao Login
+                        </button>
+                    </a>
+                </section>
+            </form>
+        </div>
+
+    </div>
+
+    <script type="module" src="../script/trocaSenha.js"></script>
+</body>
+
+</html>

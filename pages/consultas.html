@@ -44,24 +44,32 @@
         </div>
 
         <!-- Tabela de Consultas -->
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-medium text-[#32936f] mb-4">Consultas Registradas</h2>
-            
-            <table class="min-w-full table-auto">
-                <thead>
-                    <tr class="border-b">
-                        <th class="py-2 px-4 text-left text-[#395e66]">Motivo da Consulta</th>
-                        <th class="py-2 px-4 text-left text-[#395e66]">Veterinário</th>
-                        <th class="py-2 px-4 text-left text-[#395e66]">Data</th>
-                        <th class="py-2 px-4 text-left text-[#395e66]">Descrição</th>
-                    </tr>
-                </thead>
-                <tbody id="consultaTableBody">
-                    <!-- Consultas serão exibidas aqui -->
-                </tbody>
-            </table>
-            
-        </div>
+<div class="bg-white p-6 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-medium text-[#32936f] mb-4">Consultas Registradas</h2>
+    
+    <!-- Contêiner para tornar a tabela rolável -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full table-auto border-collapse">
+            <thead>
+                <tr class="border-b bg-[#f7f7f7]">
+                    <th class="py-2 px-4 text-left text-[#395e66] text-sm">Motivo da Consulta</th>
+                    <th class="py-2 px-4 text-left text-[#395e66] text-sm">Veterinário</th>
+                    <th class="py-2 px-4 text-left text-[#395e66] text-sm">Data</th>
+                    <th class="py-2 px-4 text-left text-[#395e66] text-sm">Descrição</th>
+                </tr>
+            </thead>
+            <tbody id="consultaTableBody">
+                <!-- Consultas serão exibidas aqui -->
+                <tr class="border-b">
+                    <td class="py-2 px-4 text-sm text-[#395e66]">Exemplo de Motivo</td>
+                    <td class="py-2 px-4 text-sm text-[#395e66]">Dr. Exemplo</td>
+                    <td class="py-2 px-4 text-sm text-[#395e66]">2024-11-26</td>
+                    <td class="py-2 px-4 text-sm text-[#395e66]">Exemplo de descrição longa que pode ser truncada.</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
+</div>
+
 </body>
 </html>

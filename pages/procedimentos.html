@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Procedimentos de Pet</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script type="module" src="../script/procedimentos.js" defer></script> <!-- Link para o arquivo JS -->
+    <script type="module" src="../script/procedimentos.js" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Definindo Roboto como fonte global */
         body {
             font-family: 'Roboto', sans-serif;
         }
@@ -16,49 +15,51 @@
 </head>
 <body class="bg-gradient-to-br from-[#395e66] via-[#387d7a] to-[#32936f] min-h-screen">
 
-    <div class="container mx-auto p-8">
-        <h1 class="text-3xl font-semibold text-center text-white mb-6">Procedimentos do Pet</h1>
+    <div class="container mx-auto max-w-screen-lg p-4 sm:p-8">
+        <h1 class="text-2xl sm:text-3xl font-semibold text-center text-white mb-6">Procedimentos do Pet</h1>
 
         <!-- Formulário para adicionar procedimento -->
-        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
-            <h2 class="text-2xl font-medium text-[#32936f] mb-4">Cadastrar Procedimento</h2>
+        <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-xl sm:text-2xl font-medium text-[#32936f] mb-4">Cadastrar Procedimento</h2>
             <form id="procedimentoForm">
                 <div class="mb-4">
-                    <label for="procedure_name" class="block text-[#395e66]">Nome do Procedimento</label>
-                    <input type="text" id="procedure_name" name="procedure_name" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]" required>
+                    <label for="procedure_name" class="block text-[#395e66] text-sm sm:text-base">Nome do Procedimento</label>
+                    <input type="text" id="procedure_name" name="procedure_name" class="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]" required>
                 </div>
                 <div class="mb-4">
-                    <label for="vet_name" class="block text-[#395e66]">Nome do Veterinário</label>
-                    <input type="text" id="vet_name" name="vet_name" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]" required>
+                    <label for="vet_name" class="block text-[#395e66] text-sm sm:text-base">Nome do Veterinário</label>
+                    <input type="text" id="vet_name" name="vet_name" class="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]" required>
                 </div>
                 <div class="mb-4">
-                    <label for="procedure_date" class="block text-[#395e66]">Data do Procedimento</label>
-                    <input type="date" id="procedure_date" name="procedure_date" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]" required>
+                    <label for="procedure_date" class="block text-[#395e66] text-sm sm:text-base">Data do Procedimento</label>
+                    <input type="date" id="procedure_date" name="procedure_date" class="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]" required>
                 </div>
                 <div class="mb-4">
-                    <label for="description" class="block text-[#395e66]">Descrição</label>
-                    <textarea id="description" name="description" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]" rows="4"></textarea>
+                    <label for="description" class="block text-[#395e66] text-sm sm:text-base">Descrição</label>
+                    <textarea id="description" name="description" class="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32936f]" rows="4"></textarea>
                 </div>
-                <button type="submit" class="w-full bg-[#26a96c] text-white p-3 rounded-lg hover:bg-[#2bc016]">Cadastrar Procedimento</button>
+                <button type="submit" class="w-full bg-[#26a96c] text-white p-2 sm:p-3 rounded-lg hover:bg-[#2bc016] text-sm sm:text-base">Cadastrar Procedimento</button>
             </form>
         </div>
 
         <!-- Tabela de Procedimentos -->
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-medium text-[#32936f] mb-4">Procedimentos Registrados</h2>
-            <table class="min-w-full table-auto">
-                <thead>
-                    <tr class="border-b">
-                        <th class="py-2 px-4 text-left text-[#395e66]">Nome do Procedimento</th>
-                        <th class="py-2 px-4 text-left text-[#395e66]">Veterinário</th>
-                        <th class="py-2 px-4 text-left text-[#395e66]">Data</th>
-                        <th class="py-2 px-4 text-left text-[#395e66]">Descrição</th>
-                    </tr>
-                </thead>
-                <tbody id="procedimentoTableBody">
-                    <!-- Procedimentos serão exibidos aqui -->
-                </tbody>
-            </table>
+        <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+            <h2 class="text-xl sm:text-2xl font-medium text-[#32936f] mb-4">Procedimentos Registrados</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto">
+                    <thead>
+                        <tr class="border-b">
+                            <th class="py-2 px-4 text-left text-[#395e66] text-sm sm:text-base">Nome do Procedimento</th>
+                            <th class="py-2 px-4 text-left text-[#395e66] text-sm sm:text-base">Veterinário</th>
+                            <th class="py-2 px-4 text-left text-[#395e66] text-sm sm:text-base">Data</th>
+                            <th class="py-2 px-4 text-left text-[#395e66] text-sm sm:text-base">Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody id="procedimentoTableBody">
+                        <!-- Procedimentos serão exibidos aqui -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </body>

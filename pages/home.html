@@ -6,6 +6,8 @@
     <title>Petvita</title>
     <script src="https://cdn.tailwindcss.com"></script> <!-- Link to Tailwind CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <style>
         /* Definindo Roboto como fonte global */
         body {
@@ -83,15 +85,16 @@
     <div id="pet-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <div class="bg-white rounded-lg p-6 max-w-md mx-auto w-full sm:w-96">
             <h2 class="text-[#32936f] text-2xl font-semibold mb-4">Adicione o seu pet</h2>
-            <p class="text-[#32936f] mb-4">Escolha uma foto</p>
+            <p class="text-black mb-4">Escolha uma foto</p>
 
             <!-- Upload Photo Icon -->
-            <div class="mb-4">
+            <div class="mb-4 flex justify-center">
                 <label for="pet-photo" class="cursor-pointer">
-                    <img src="/assets/IconeUpload.png" alt="Ícone de upload" class="h-10 mx-auto">
+                    <ion-icon name="arrow-up-circle-outline" class="text-[#32936f] text-4xl"></ion-icon>
                     <input type="file" id="pet-photo" class="hidden" />
                 </label>
             </div>
+            
 
             <!-- Nome do arquivo selecionado (novo elemento) -->
             <p id="file-name" class="text-sm text-gray-600 mt-2"></p> <!-- Elemento para exibir o nome do arquivo -->

@@ -80,7 +80,6 @@ function addVaccine(userId, petId, vaccineName, vetName, vaccineDate, descriptio
         vaccine_date: vaccineDate,
         description: description
     }).then(() => {
-        // alert('Vacina salva com sucesso!');
         form.reset();
         displayVaccines(userId, petId);  // Atualiza as vacinas na tabela
     }).catch((error) => console.error('Erro ao salvar vacina:', error));
@@ -154,7 +153,6 @@ function updateVaccine(userId, petId, vaccineKey, vaccineName, vetName, vaccineD
         vaccine_date: vaccineDate,
         description: description
     }).then(() => {
-        // alert('Vacina atualizada com sucesso!');
         form.reset();
         currentVaccineKey = null; // Limpar a chave da vacina em edição
         displayVaccines(userId, petId);  // Atualiza as vacinas na tabela
@@ -165,16 +163,41 @@ function updateVaccine(userId, petId, vaccineKey, vaccineName, vetName, vaccineD
 function deleteVaccine(userId, petId, vaccineKey) {
     const vaccineRef = ref(database, `Users/${userId}/Pets/${petId}/Vacinas/${vaccineKey}`);
     remove(vaccineRef).then(() => {
-        // alert('Vacina excluída com sucesso!');
         displayVaccines(userId, petId);  // Atualiza a tabela após a exclusão
     }).catch((error) => console.error('Erro ao excluir vacina:', error));
 }
 
-// Carrega as vacinas ao carregar a página
-window.onload = function() {
-    const petId = localStorage.getItem('selectedPetId');
-    if (!petId) {
-        alert('Nenhum pet selecionado!');
-        window.location.href = './dashboard.html';
-    }
-};
+// Função para exportar as vacinas para PDF
+document.getElementById("exportPDF").addEventListener("click", function () {
+    const { jsPDF } = window.jspdf; // Garantir que jsPDF seja carregado corretamente
+    const doc = new jsPDF();
+
+    // Título do PDF
+    doc.setFontSize(18);
+    doc.text("Vacinas Registradas", 14, 20);
+
+    // Definir a tabela no PDF
+    let yOffset = 30;
+    doc.setFontSize(12);
+    const tableHeaders = ["Nome da Vacina", "Veterinário", "Data", "Descrição"];
+    
+    // Tabela: cabeçalho
+    tableHeaders.forEach((header, index) => {
+        doc.text(header, 14 + (index * 45), yOffset);
+    });
+
+    // Preencher a tabela com os dados das vacinas
+    const rows = Array.from(tableBody.getElementsByTagName("tr"));
+    yOffset += 10; // Ajuste da altura para a primeira linha de dados
+
+    rows.forEach(row => {
+        const cells = row.getElementsByTagName("td");
+        Array.from(cells).forEach((cell, index) => {
+            doc.text(cell.textContent, 14 + (index * 45), yOffset);
+        });
+        yOffset += 10; // Deslocamento para a próxima linha
+    });
+
+    // Salvar o PDF
+    doc.save("vacinas_pet.pdf");
+});

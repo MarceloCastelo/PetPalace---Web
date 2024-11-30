@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="../script/consultas.js" defer></script> <!-- Link para o arquivo JS -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> <!-- jsPDF -->
     <style>
         /* Definindo Roboto como fonte global */
         body {
@@ -44,32 +45,32 @@
         </div>
 
         <!-- Tabela de Consultas -->
-<div class="bg-white p-6 rounded-lg shadow-lg">
-    <h2 class="text-2xl font-medium text-[#32936f] mb-4">Consultas Registradas</h2>
-    
-    <!-- Contêiner para tornar a tabela rolável -->
-    <div class="overflow-x-auto">
-        <table class="min-w-full table-auto border-collapse">
-            <thead>
-                <tr class="border-b bg-[#f7f7f7]">
-                    <th class="py-2 px-4 text-left text-[#395e66] text-sm">Motivo da Consulta</th>
-                    <th class="py-2 px-4 text-left text-[#395e66] text-sm">Veterinário</th>
-                    <th class="py-2 px-4 text-left text-[#395e66] text-sm">Data</th>
-                    <th class="py-2 px-4 text-left text-[#395e66] text-sm">Descrição</th>
-                </tr>
-            </thead>
-            <tbody id="consultaTableBody">
-                <!-- Consultas serão exibidas aqui -->
-                <tr class="border-b">
-                    <td class="py-2 px-4 text-sm text-[#395e66]">Exemplo de Motivo</td>
-                    <td class="py-2 px-4 text-sm text-[#395e66]">Dr. Exemplo</td>
-                    <td class="py-2 px-4 text-sm text-[#395e66]">2024-11-26</td>
-                    <td class="py-2 px-4 text-sm text-[#395e66]">Exemplo de descrição longa que pode ser truncada.</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-medium text-[#32936f] mb-4">Consultas Registradas</h2>
+            
+            <!-- Contêiner para tornar a tabela rolável -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto border-collapse">
+                    <thead>
+                        <tr class="border-b bg-[#f7f7f7]">
+                            <th class="py-2 px-4 text-left text-[#395e66] text-sm">Motivo da Consulta</th>
+                            <th class="py-2 px-4 text-left text-[#395e66] text-sm">Veterinário</th>
+                            <th class="py-2 px-4 text-left text-[#395e66] text-sm">Data</th>
+                            <th class="py-2 px-4 text-left text-[#395e66] text-sm">Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody id="consultaTableBody">
+                        <!-- Consultas serão exibidas aqui -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Botão para exportar para PDF -->
+            <button id="exportPDF" class="w-full bg-[#26a96c] text-white p-3 rounded-lg hover:bg-[#2bc016] mt-6">
+                Exportar para PDF
+            </button>
+        </div>
     </div>
-</div>
 
 </body>
 </html>

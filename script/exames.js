@@ -80,7 +80,6 @@ function addExam(userId, petId, examName, vetName, examDate, results) {
         exam_date: examDate,
         results: results
     }).then(() => {
-        // alert('Exame salvo com sucesso!');
         form.reset();
         displayExams(userId, petId);  // Atualiza os exames na tabela
     }).catch((error) => console.error('Erro ao salvar exame:', error));
@@ -154,7 +153,6 @@ function updateExam(userId, petId, examKey, examName, vetName, examDate, results
         exam_date: examDate,
         results: results
     }).then(() => {
-        // alert('Exame atualizado com sucesso!');
         form.reset();
         currentExamKey = null; // Limpar a chave do exame em edição
         displayExams(userId, petId);  // Atualiza os exames na tabela
@@ -165,7 +163,41 @@ function updateExam(userId, petId, examKey, examName, vetName, examDate, results
 function deleteExam(userId, petId, examKey) {
     const examRef = ref(database, `Users/${userId}/Pets/${petId}/Exames/${examKey}`);
     remove(examRef).then(() => {
-        // alert('Exame excluído com sucesso!');
         displayExams(userId, petId);  // Atualiza a tabela após a exclusão
     }).catch((error) => console.error('Erro ao excluir exame:', error));
 }
+
+// Função para exportar os exames para PDF
+document.getElementById("exportPDF").addEventListener("click", function () {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Título do PDF
+    doc.setFontSize(18);
+    doc.text("Exames Registrados", 14, 20);
+
+    // Definir a tabela no PDF
+    let yOffset = 30;
+    doc.setFontSize(12);
+    const tableHeaders = ["Nome do Exame", "Veterinário", "Data", "Resultados"];
+    
+    // Tabela: cabeçalho
+    tableHeaders.forEach((header, index) => {
+        doc.text(header, 14 + (index * 45), yOffset);
+    });
+
+    // Preencher a tabela com os dados dos exames
+    const rows = Array.from(tableBody.getElementsByTagName("tr"));
+    yOffset += 10; // Ajuste da altura para a primeira linha de dados
+
+    rows.forEach(row => {
+        const cells = row.getElementsByTagName("td");
+        Array.from(cells).forEach((cell, index) => {
+            doc.text(cell.textContent, 14 + (index * 45), yOffset);
+        });
+        yOffset += 10; // Deslocamento para a próxima linha
+    });
+
+    // Salvar o PDF
+    doc.save("exames_pet.pdf");
+});

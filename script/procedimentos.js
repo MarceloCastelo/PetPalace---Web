@@ -154,7 +154,6 @@ function updateProcedure(userId, petId, procedureKey, procedureName, vetName, pr
         procedure_date: procedureDate,
         description: description
     }).then(() => {
-        // alert('Procedimento atualizado com sucesso!');
         form.reset();
         currentProcedureKey = null; // Limpar a chave do procedimento em edição
         displayProcedures(userId, petId);  // Atualiza os procedimentos na tabela
@@ -165,16 +164,41 @@ function updateProcedure(userId, petId, procedureKey, procedureName, vetName, pr
 function deleteProcedure(userId, petId, procedureKey) {
     const procedureRef = ref(database, `Users/${userId}/Pets/${petId}/Procedimentos/${procedureKey}`);
     remove(procedureRef).then(() => {
-        // alert('Procedimento excluído com sucesso!');
         displayProcedures(userId, petId);  // Atualiza a tabela após a exclusão
     }).catch((error) => console.error('Erro ao excluir procedimento:', error));
 }
 
-// Carrega os procedimentos ao carregar a página
-window.onload = function() {
-    const petId = localStorage.getItem('selectedPetId');
-    if (!petId) {
-        alert('Nenhum pet selecionado!');
-        window.location.href = './dashboard.html';
-    }
-};
+// Função para exportar os procedimentos para PDF
+document.getElementById("exportPDF").addEventListener("click", function () {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Título do PDF
+    doc.setFontSize(18);
+    doc.text("Procedimentos Registrados", 14, 20);
+
+    // Definir a tabela no PDF
+    let yOffset = 30;
+    doc.setFontSize(12);
+    const tableHeaders = ["Nome do Procedimento", "Veterinário", "Data", "Descrição"];
+    
+    // Tabela: cabeçalho
+    tableHeaders.forEach((header, index) => {
+        doc.text(header, 14 + (index * 45), yOffset);
+    });
+
+    // Preencher a tabela com os dados dos procedimentos
+    const rows = Array.from(tableBody.getElementsByTagName("tr"));
+    yOffset += 10; // Ajuste da altura para a primeira linha de dados
+
+    rows.forEach(row => {
+        const cells = row.getElementsByTagName("td");
+        Array.from(cells).forEach((cell, index) => {
+            doc.text(cell.textContent, 14 + (index * 45), yOffset);
+        });
+        yOffset += 10; // Deslocamento para a próxima linha
+    });
+
+    // Salvar o PDF
+    doc.save("procedimentos_pet.pdf");
+});

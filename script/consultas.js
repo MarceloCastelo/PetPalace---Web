@@ -80,7 +80,6 @@ function addConsultation(userId, petId, consultationReason, vetName, consultatio
         consultation_date: consultationDate,
         description: description
     }).then(() => {
-        // alert('Consulta salva com sucesso!');
         form.reset();
         displayConsultations(userId, petId); // Atualiza as consultas na tabela
     }).catch((error) => console.error('Erro ao salvar consulta:', error));
@@ -154,7 +153,6 @@ function updateConsultation(userId, petId, consultationKey, consultationReason, 
         consultation_date: consultationDate,
         description: description
     }).then(() => {
-        // alert('Consulta atualizada com sucesso!');
         form.reset();
         currentConsultationKey = null; // Limpar a chave da consulta em edição
         displayConsultations(userId, petId); // Atualiza as consultas na tabela
@@ -165,7 +163,41 @@ function updateConsultation(userId, petId, consultationKey, consultationReason, 
 function deleteConsultation(userId, petId, consultationKey) {
     const consultationRef = ref(database, `Users/${userId}/Pets/${petId}/Consultas/${consultationKey}`);
     remove(consultationRef).then(() => {
-        // alert('Consulta excluída com sucesso!');
         displayConsultations(userId, petId); // Atualiza a tabela após a exclusão
     }).catch((error) => console.error('Erro ao excluir consulta:', error));
 }
+
+// Função para exportar as consultas para PDF
+document.getElementById("exportPDF").addEventListener("click", function () {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Título do PDF
+    doc.setFontSize(18);
+    doc.text("Consultas Registradas", 14, 20);
+
+    // Definir a tabela no PDF
+    let yOffset = 30;
+    doc.setFontSize(12);
+    const tableHeaders = ["Motivo da Consulta", "Veterinário", "Data", "Descrição"];
+    
+    // Tabela: cabeçalho
+    tableHeaders.forEach((header, index) => {
+        doc.text(header, 14 + (index * 45), yOffset);
+    });
+
+    // Preencher a tabela com os dados das consultas
+    const rows = Array.from(tableBody.getElementsByTagName("tr"));
+    yOffset += 10; // Ajuste da altura para a primeira linha de dados
+
+    rows.forEach(row => {
+        const cells = row.getElementsByTagName("td");
+        Array.from(cells).forEach((cell, index) => {
+            doc.text(cell.textContent, 14 + (index * 45), yOffset);
+        });
+        yOffset += 10; // Deslocamento para a próxima linha
+    });
+
+    // Salvar o PDF
+    doc.save("consultas_pet.pdf");
+});

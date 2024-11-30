@@ -1,6 +1,23 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut, updateProfile, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+import { 
+    initializeApp 
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+
+import { 
+    getAuth, 
+    onAuthStateChanged, 
+    signOut, 
+    updateProfile, 
+    updatePassword, 
+    reauthenticateWithCredential, 
+    EmailAuthProvider 
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+import { 
+    getDatabase, 
+    ref, 
+    update, 
+    get 
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
 // Configuração do Firebase
 const firebaseConfig = {
@@ -13,77 +30,104 @@ const firebaseConfig = {
     appId: "1:154097214013:web:383b976afe2f03fd350054"
 };
 
-// Inicializando o Firebase
+// Inicializa o Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-// Função para carregar os dados do usuário
+// Função para carregar dados do usuário
 function loadUserData(user) {
-    if (user) {
-        const userRef = ref(database, `Users/${user.uid}`); // Corrigido para salvar em 'Users'
-        get(userRef).then((snapshot) => {
+    if (!user) {
+        alert("Por favor, faça login.");
+        window.location.href = "/login";
+        return;
+    }
+
+    const userRef = ref(database, `Users/${user.uid}`);
+    get(userRef)
+        .then(snapshot => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
                 document.getElementById("nome").value = data.nome || user.displayName || "Nome não disponível";
                 document.getElementById("email").value = data.email || user.email || "Email não disponível";
-                document.getElementById("telefone").value = data.telefone || "Telefone não disponível";
-                document.getElementById("endereco").value = data.endereco || "Endereço não disponível";
+                document.getElementById("telefone").value = data.telefone || "";
+                document.getElementById("endereco").value = data.endereco || "";
                 document.getElementById("dataNascimento").value = data.dataNascimento || "";
                 document.getElementById("genero").value = data.genero || "nao_informar";
-                if (data.fotoPerfil) {
-                    document.getElementById("fotoPreview").src = data.fotoPerfil;
-                }
+                document.getElementById("fotoPreview").src = data.fotoPerfil || "default-avatar.png";
+            } else {
+                console.warn("Nenhum dado encontrado para o usuário.");
             }
+        })
+        .catch(error => {
+            console.error("Erro ao carregar dados do usuário:", error);
         });
-        document.getElementById("logoutBtn").classList.remove("hidden");
-    } else {
-        alert("Por favor, faça o login.");
-        window.location.href = "/login"; // Redireciona para a página de login
-    }
+
+    document.getElementById("logoutBtn").classList.remove("hidden");
 }
 
-// Função para salvar os dados do perfil
+// Função para salvar o perfil
 function salvarPerfil() {
     const user = auth.currentUser;
-    if (user) {
-        const nome = document.getElementById("nome").value;
-        const telefone = document.getElementById("telefone").value;
-        const endereco = document.getElementById("endereco").value;
-        const dataNascimento = document.getElementById("dataNascimento").value;
-        const genero = document.getElementById("genero").value;
-        const fotoPerfil = document.getElementById("foto").files[0];
+    if (!user) {
+        alert("Usuário não autenticado.");
+        return;
+    }
 
-        // Atualizando o perfil no Firebase Authentication
-        updateProfile(user, {
-            displayName: nome,
-        }).catch((error) => console.error("Erro ao atualizar o perfil:", error));
+    const nome = document.getElementById("nome").value.trim();
+    const telefone = document.getElementById("telefone").value.trim();
+    const endereco = document.getElementById("endereco").value.trim();
+    const dataNascimento = document.getElementById("dataNascimento").value.trim();
+    const genero = document.getElementById("genero").value;
+    const fotoPerfil = document.getElementById("foto").files[0];
 
-        // Atualizando o perfil no Realtime Database
-        const userRef = ref(database, `Users/${user.uid}`); // Corrigido para salvar em 'Users'
-        const updates = { nome, telefone, endereco, dataNascimento, genero, email: user.email };
+    if (!nome || !telefone || !endereco) {
+        alert("Por favor, preencha todos os campos obrigatórios.");
+        return;
+    }
 
-        // Se o usuário adicionou uma foto de perfil
-        if (fotoPerfil) {
-            const reader = new FileReader();
-            reader.onload = function (event) {
-                updates.fotoPerfil = event.target.result; // Salvar a imagem como base64
-                update(userRef, updates).then(() => {
-                    alert("Perfil atualizado com sucesso!");
-                    loadUserData(user); // Atualiza os dados exibidos
-                });
-            };
-            reader.readAsDataURL(fotoPerfil);
-        } else {
-            update(userRef, updates).then(() => {
-                alert("Perfil atualizado com sucesso!");
-                loadUserData(user);
-            });
-        }
+    const userRef = ref(database, `Users/${user.uid}`);
+    const updates = {
+        nome, 
+        telefone, 
+        endereco, 
+        dataNascimento, 
+        genero, 
+        email: user.email
+    };
+
+    // Atualizar a foto do perfil se uma nova for selecionada
+    if (fotoPerfil) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            updates.fotoPerfil = event.target.result;
+            salvarDadosNoBanco(userRef, updates, user, nome);
+        };
+        reader.readAsDataURL(fotoPerfil);
+    } else {
+        salvarDadosNoBanco(userRef, updates, user, nome);
     }
 }
 
-// Função para alterar a senha
+// Função para salvar dados no Realtime Database
+function salvarDadosNoBanco(userRef, updates, user, nome) {
+    update(userRef, updates)
+        .then(() => {
+            alert("Perfil atualizado com sucesso!");
+            // Atualizar o perfil no Firebase Authentication
+            return updateProfile(user, { displayName: nome });
+        })
+        .then(() => {
+            console.log("Perfil no Auth atualizado.");
+            loadUserData(user);
+        })
+        .catch(error => {
+            console.error("Erro ao salvar os dados:", error);
+            alert("Erro ao salvar os dados. Tente novamente.");
+        });
+}
+
+// Função para alterar senha
 function alterarSenha() {
     const user = auth.currentUser;
     const senhaAntiga = document.getElementById("senhaAntiga").value;
@@ -95,46 +139,43 @@ function alterarSenha() {
         return;
     }
 
-    if (user && senhaAntiga && novaSenha) {
+    if (user) {
         const credential = EmailAuthProvider.credential(user.email, senhaAntiga);
-        
-        reauthenticateWithCredential(user, credential).then(() => {
-            updatePassword(user, novaSenha).then(() => {
+        reauthenticateWithCredential(user, credential)
+            .then(() => updatePassword(user, novaSenha))
+            .then(() => {
                 alert("Senha alterada com sucesso!");
-                document.getElementById("modalAlterarSenha").classList.add("hidden"); // Fecha o modal
-            }).catch((error) => {
-                console.error("Erro ao alterar a senha:", error);
-                alert("Erro ao alterar a senha.");
+                document.getElementById("modalAlterarSenha").classList.add("hidden");
+            })
+            .catch(error => {
+                console.error("Erro ao alterar senha:", error);
+                alert("Erro ao alterar a senha. Verifique a senha antiga.");
             });
-        }).catch((error) => {
-            console.error("Erro na reautenticação:", error);
-            alert("Senha antiga incorreta.");
-        });
     } else {
-        alert("Por favor, preencha todos os campos.");
+        alert("Usuário não autenticado.");
     }
 }
 
 // Função de logout
 function logout() {
-    signOut(auth).then(() => {
-        alert("Você foi deslogado com sucesso!");
-        window.location.href = "../pages/login.html";
-    }).catch((error) => {
-        console.error("Erro ao deslogar:", error.message);
-    });
+    signOut(auth)
+        .then(() => {
+            alert("Você foi deslogado com sucesso!");
+            window.location.href = "../pages/login.html";
+        })
+        .catch(error => console.error("Erro ao deslogar:", error));
 }
 
-// Checando se o usuário está logado
-onAuthStateChanged(auth, (user) => {
+// Checar se o usuário está autenticado
+onAuthStateChanged(auth, user => {
     if (user) {
         loadUserData(user);
     } else {
-        window.location.href = "../pages/login.html"; // Redireciona para a página de login
+        window.location.href = "../pages/login.html";
     }
 });
 
-// Associando eventos
+// Associar eventos
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("salvarBtn").addEventListener("click", salvarPerfil);
     document.getElementById("logoutBtn").addEventListener("click", logout);
